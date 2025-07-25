@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  max-width: 100%;
+  box-shadow: 0px 2px 5px rgba(246, 246, 246, 0.978);
+  background: linear-gradient(to bottom, rgb(42, 57, 62), #000000);
+  background-attachment: fixed;
+  padding: 10px;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #FFFFFF;
+  position: relative;
+}
+
+.music-control {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: rgba(141, 143, 235, 0.9);
+  border: 2px solid #FFFFFF;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  transition: all 0.3s;
+  z-index: 110;
+  color: #FFFFFF;
+}
+
+.music-control:hover {
+  background: rgba(141, 143, 235, 1);
+  transform: scale(1.1);
+}
+
+.music-control.muted {
+  background: rgba(255, 100, 100, 0.9);
+  color: white;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #FFFFFF;
+  background-color: rgb(57, 57, 95);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.game-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  padding-bottom: 120px; /* Space for footer */
+}
+
+#board {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(12, 1fr);
+  gap: 1px;
+  background-color: rgb(57, 57, 95);
+  border: 2px solid rgb(42, 57, 62);
+  border-radius: 5px;
+  padding: 5px;
+  margin: 20px auto;
+  /* Responsive sizing */
+  width: min(90vw, 90vh, 500px);
+  height: min(90vw, 90vh, 500px);
+  max-width: 500px;
+  max-height: 500px;
+}
+
+#board div {
+  border: 1px solid #10202877;
+  background-color: rgb(141, 143, 235);
+  color: #FFFFFF;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+#board div:hover {
+  background-color: rgb(161, 163, 255);
+}
+
+p {
+  text-align: center;
+  margin: 10px 0;
+  padding: 0 20px;
+}
+
+h1 {
+  text-align: center;
+  font-size: clamp(24px, 8vw, 50px);
+  margin: 10px 0;
+}
+
+h2 {
+  text-align: center;
+  font-size: clamp(16px, 4vw, 24px);
+  margin: 10px 0;
+  padding: 0 20px;
+  line-height: 1.4;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+a:link, a:visited {
+  background-color: rgb(18, 39, 57);
+  color: rgb(188, 194, 213);
+  border: 2px solid rgb(188, 194, 213);
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 5px;
+  font-size: clamp(12px, 3vw, 16px);
+  transition: all 0.3s;
+}
+
+a:hover, a:active {
+  background-color: rgb(62, 62, 178);
+  color: rgba(18, 5, 101, 0.719);
+  transform: translateY(-2px);
+}
+
+audio {
+  display: none; /* Hide the default audio controls */
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: linear-gradient(to top, rgb(42, 57, 62), rgb(57, 57, 95));
+  color: #FFFFFF;
+  text-align: center;
+  padding: 15px;
+  font-size: 14px;
+  border-top: 2px solid rgb(141, 143, 235);
+  z-index: 50;
+}
+
+footer p {
+  margin: 5px 0;
+  color: #FFFFFF;
+}
+
+footer a {
+  color: rgb(188, 194, 213);
+  text-decoration: none;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+footer a:hover {
+  color: rgb(141, 143, 235);
+  background: none;
+  text-decoration: underline;
+  transform: none;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  header {
+    padding: 5px;
+  }
+  
+  h1 {
+    font-size: 28px;
+  }
+  
+  h2 {
+    font-size: 16px;
+    padding: 0 10px;
+  }
+  
+  #board {
+    width: min(95vw, 95vh, 400px);
+    height: min(95vw, 95vh, 400px);
+    gap: 0.5px;
+  }
+  
+  #board div {
+    font-size: 1em;
+  }
+  
+  .game-container {
+    padding: 10px;
+    padding-bottom: 110px;
+  }
+  
+  a:link, a:visited {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+  
+  nav {
+    gap: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 24px;
+  }
+  
+  h2 {
+    font-size: 14px;
+  }
+  
+  #board {
+    width: min(98vw, 98vh, 350px);
+    height: min(98vw, 98vh, 350px);
+  }
+  
+  #board div {
+    font-size: 0.9em;
+  }
+  
+  a:link, a:visited {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
+
+/* Landscape mobile orientation */
+@media (max-height: 500px) and (orientation: landscape) {
+  #board {
+    width: min(70vh, 350px);
+    height: min(70vh, 350px);
+  }
+  
+  .game-container {
+    padding: 5px;
+    padding-bottom: 100px;
+  }
+  
+  .music-control {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+    top: 5px;
+    right: 10px;
+  }
+  
+  h2 {
+    font-size: 12px;
+    margin: 5px 0;
+  }
+}
+</style>
+
+<head>
+  <title>Gomoku Game - Dark Mode</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<header>
+  <div class="music-control" id="musicToggle" onclick="toggleMusic()">🔊</div>
+  <h1>Gomoku</h1>
+  <nav>
+    <a href="#" onclick="location.reload()">Refresh</a>
+    <a href="index.html">Normal Mode</a>
+  </nav>
+</header>
+
+<body>
+  <div class="game-container">
+    <h2>How to play: The objective of the game is to be the first player
+       to place five stones in a row, horizontally, vertically, or diagonally.</h2>
+
+    <p><b>First player is 'X' | Second player is 'O'</b></p>
+    
+    <div id="board"></div>
+  </div>
+
+  <audio id="myAudio" autoplay loop>
+    <source src="assignment.mp3" type="audio/mpeg">
+  </audio>
+
+  <footer>
+    <p>&copy; 2023 Gomoku Game | Developed by Hafiz Ismail</p>
+    <p>Background Music: <a href="#" onclick="toggleMusic()">Toggle Music</a></p>
+  </footer>
+
+  <script>
+    // Create the game board
+    const board = document.getElementById('board');
+    let currentPlayer = 'X';
+    let gameBoard = Array(12).fill().map(() => Array(12).fill(''));
+    let gameActive = true;
+
+    // Initialize board
+    for (let i = 0; i < 144; i++) {
+      const cell = document.createElement('div');
+      cell.addEventListener('click', () => makeMove(i));
+      board.appendChild(cell);
+    }
+
+    function makeMove(index) {
+      if (!gameActive) return;
+      
+      const row = Math.floor(index / 12);
+      const col = index % 12;
+      
+      if (gameBoard[row][col] !== '') return;
+      
+      gameBoard[row][col] = currentPlayer;
+      board.children[index].textContent = currentPlayer;
+      board.children[index].style.color = currentPlayer === 'X' ? '#FF6B6B' : '#4ECDC4';
+      
+      if (checkWin(row, col)) {
+        setTimeout(() => {
+          alert(`Player ${currentPlayer} wins!`);
+          gameActive = false;
+        }, 100);
+        return;
+      }
+      
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    }
+
+    function checkWin(row, col) {
+      const directions = [
+        [0, 1], [1, 0], [1, 1], [1, -1]
+      ];
+      
+      for (let [dx, dy] of directions) {
+        let count = 1;
+        
+        // Check positive direction
+        for (let i = 1; i < 5; i++) {
+          const newRow = row + dx * i;
+          const newCol = col + dy * i;
+          if (newRow < 0 || newRow >= 12 || newCol < 0 || newCol >= 12) break;
+          if (gameBoard[newRow][newCol] !== currentPlayer) break;
+          count++;
+        }
+        
+        // Check negative direction
+        for (let i = 1; i < 5; i++) {
+          const newRow = row - dx * i;
+          const newCol = col - dy * i;
+          if (newRow < 0 || newRow >= 12 || newCol < 0 || newCol >= 12) break;
+          if (gameBoard[newRow][newCol] !== currentPlayer) break;
+          count++;
+        }
+        
+        if (count >= 5) return true;
+      }
+      
+      return false;
+    }
+
+    // Audio controls
+    var audio = document.getElementById("myAudio");
+    let isMuted = false;
+
+    // Auto-play music when page loads
+    window.addEventListener('load', function() {
+      audio.play().catch(function(error) {
+        console.log("Auto-play prevented by browser:", error);
+        // Show a message or handle auto-play restriction
+      });
+    });
+
+    function toggleMusic() {
+      const musicButton = document.getElementById("musicToggle");
+      
+      if (isMuted || audio.paused) {
+        audio.play();
+        musicButton.textContent = "🔊";
+        musicButton.classList.remove("muted");
+        isMuted = false;
+      } else {
+        audio.pause();
+        musicButton.textContent = "🔇";
+        musicButton.classList.add("muted");
+        isMuted = true;
+      }
+    }
+
+    function playAudio() {
+      audio.play();
+    }
+
+    function pauseAudio() {
+      audio.pause();
+    }
+
+    function setVolume(volume) {
+      audio.volume = volume;
+    }
+  </script>
+</body>
+
+</html>
